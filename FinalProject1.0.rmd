@@ -1,0 +1,185 @@
+---
+title: "500 Final Project"
+author: "Matt Varano, Santosh Chavan, Jyothika Jagilinki"
+date: "3/21/2020"
+version: "1.0"
+LastEdit: "3/23/20 1:12PM MV"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(readr)
+library(reshape)
+
+#Read in CSV File
+
+#setwd("C:/Users/mavarano/OneDrive - Harrisburg University/School/MSA/ANLY 500/Final Project")
+CountryData = read.csv("CountryDataFinal.csv")
+```
+
+```{r}
+CountryData
+```
+
+
+```{r}
+#Remove Additional data from dataframe (Analysis is on calculated percentage change, not raw data)
+
+CountryDataFinal0116 = CountryData[ , -c(1,3,5,6,7,8,9,10,11,12,13,15)]
+CountryDataFinal1116 = CountryData[ , -c(1,3,5,6,7,8,9,10,11,12,13,14)]
+
+CountryDataFinal0116
+```
+
+
+```{r}
+#Create wide dataframes to show each data series in its own column for easy summarization. 
+
+CountryDataWide0116 = reshape(CountryDataFinal0116,
+                      timevar = "Series.Code",
+                      idvar = "Country.Code",
+                      direction = "wide")
+summary(CountryDataWide0116)
+```
+
+```{r}
+names(CountryDataWide1116)
+```
+
+
+
+```{r}
+CountryDataWide1116 = reshape(CountryDataFinal1116,
+                      timevar = "Series.Code",
+                      idvar = "Country.Code",
+                      direction = "wide")
+summary(CountryDataWide1116)
+
+
+```
+
+```{r}
+
+df1 = CountryDataWide1116
+df1
+
+```
+CLEANING DATA
+
+```{r}
+library(dplyr)
+miss_percent  <- function(x) { (sum(is.na(x))/length(x)) *100 }
+table(df1[,-c(1)] %>% apply(2,miss_percent))
+
+```
+
+
+```{r}
+df1$PercentChange1116.SE.ADT.LITR.ZS[is.na(df1$PercentChange1116.SE.ADT.LITR.ZS)] = mean(df1$PercentChange1116.SE.ADT.LITR.ZS,na.rm = TRUE)
+sum(is.na(df1$PercentChange1116.SE.ADT.LITR.ZS))
+```
+
+
+
+```{r}
+df1$PercentChange1116.NY.GDP.PCAP.KN[is.na(df1$PercentChange1116.NY.GDP.PCAP.KN)] = mean(df1$PercentChange1116.NY.GDP.PCAP.KN,na.rm = TRUE)
+sum(is.na(df1$PercentChange1116.NY.GDP.PCAP.KN))
+
+```
+
+
+```{r}
+
+df1$PercentChange1116.UIS.GER.4[is.na(df1$PercentChange1116.UIS.GER.4)] = mean(df1$PercentChange1116.UIS.GER.4,na.rm = TRUE)
+sum(is.na(df1$PercentChange1116.UIS.GER.4))
+
+```
+
+
+```{r}
+df1$PercentChange1116.UIS.LR.AG25T64[is.na(df1$PercentChange1116.UIS.LR.AG25T64)] = mean(df1$PercentChange1116.UIS.LR.AG25T64,na.rm = TRUE)
+sum(is.na(df1$PercentChange1116.UIS.LR.AG25T64))
+
+```
+
+```{r}
+df1$PercentChange1116.SE.ADT.1524.LT.ZS[is.na(df1$PercentChange1116.SE.ADT.1524.LT.ZS)] = mean(df1$PercentChange1116.SE.ADT.1524.LT.ZS,na.rm = TRUE)
+sum(is.na(df1$PercentChange1116.SE.ADT.1524.LT.ZS))
+
+```
+```{r}
+df1$PercentChange1116.UIS.NERT.1[is.na(df1$PercentChange1116.UIS.NERT.1)] = mean(df1$PercentChange1116.UIS.NERT.1,na.rm = TRUE)
+sum(is.na(df1$PercentChange1116.UIS.NERT.1))
+
+```
+
+```{r}
+df1$PercentChange1116.SE.PRE.NENR[is.na(df1$PercentChange1116.SE.PRE.NENR)] = mean(df1$PercentChange1116.SE.PRE.NENR,na.rm = TRUE)
+sum(is.na(df1$PercentChange1116.SE.PRE.NENR))
+
+```
+
+```{r}
+df1$PercentChange1116.UIS.NERT.2[is.na(df1$PercentChange1116.UIS.NERT.2)] = mean(df1$PercentChange1116.UIS.NERT.2,na.rm = TRUE)
+sum(is.na(df1$PercentChange1116.UIS.NERT.2))
+
+```
+
+```{r}
+df1$PercentChange1116.SE.SEC.NENR[is.na(df1$PercentChange1116.SE.SEC.NENR)] = mean(df1$PercentChange1116.SE.SEC.NENR,na.rm = TRUE)
+sum(is.na(df1$PercentChange1116.SE.SEC.NENR))
+
+```
+
+```{r}
+data.blank.count = sapply(df1, function(x) sum(x==""))
+data.blank.count
+```
+
+```{r}
+sapply(df1, function(df1){
+  sum(is.na(df1) == TRUE)/length(df1)
+})
+```
+
+```{r}
+library(dplyr)
+miss_percent  <- function(x) { (sum(is.na(x))/length(x)) *100 }
+table(df1[,-c(1)] %>% apply(2,miss_percent))
+
+```
+
+
+## corrleation
+
+```{r}
+must_convert<-sapply(df1,is.factor)       # logical vector telling if a variable needs to be displayed as numeric
+M2_1<-sapply(df1[,must_convert],unclass)    # data.frame of all categorical variables now displayed as numeric
+out_1<-cbind(df1[,!must_convert],M2_1) 
+
+```
+
+```{r}
+library(corrplot)
+M = cor(out_1[sapply(out_1, is.numeric)])
+corrplot(M,type = "upper", tl.pos = "td",
+         method = "circle", tl.cex = 0.5)
+```
+
+```{r}
+fit = lm(y ~  pop+pop65+vacant+occupied+degree+income+unemplymnt+poverty+muntype+countname+munname,data = out)#basic regression with all variables
+summary(fit)
+
+library(MASS)
+step <- stepAIC(fit, direction="both")#slecting best predictor variables too little insufficient too much is overfitting
+step$anova
+```
+
+
+
