@@ -173,6 +173,17 @@ corrplot(M,type = "upper", tl.pos = "td",
 ```
 
 ```{r}
+df.eda = df
+library(ggplot2)
+#xtabs(~Municipality.Type,df.eda)
+summary(df.eda$PercentChange1116.NY.GDP.PCAP.KN)
+ggplot(df.eda)+geom_histogram(aes(x=PercentChange1116.NY.GDP.PCAP.KN))
+
+```
+
+
+
+```{r}
 fit = lm(y ~  pop+pop65+vacant+occupied+degree+income+unemplymnt+poverty+muntype+countname+munname,data = out)#basic regression with all variables
 summary(fit)
 
