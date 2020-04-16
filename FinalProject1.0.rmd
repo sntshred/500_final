@@ -184,12 +184,28 @@ ggplot(df.eda)+geom_histogram(aes(x=PercentChange1116.NY.GDP.PCAP.KN))
 
 
 ```{r}
-fit = lm(y ~  pop+pop65+vacant+occupied+degree+income+unemplymnt+poverty+muntype+countname+munname,data = out)#basic regression with all variables
+fit = lm(PercentChange1116.NY.GDP.PCAP.KN ~  
+               PercentChange1116.SE.ADT.LITR.ZS
+              +PercentChange1116.NY.GDP.PCAP.KN
+              +PercentChange1116.UIS.GER.4
+              +PercentChange1116.UIS.LR.AG25T64
+              +PercentChange1116.SE.ADT.1524.LT.ZS
+              +PercentChange1116.UIS.NERT.1
+              +PercentChange1116.SE.PRE.NENR
+              +PercentChange1116.UIS.NERT.2
+              +PercentChange1116.SE.SEC.NENR
+            
+            ,data = out_1)#basic regression with all variables
 summary(fit)
 
 library(MASS)
 step <- stepAIC(fit, direction="both")#slecting best predictor variables too little insufficient too much is overfitting
 step$anova
+```
+```{r}
+final = lm(PercentChange1116.NY.GDP.PCAP.KN ~ PercentChange1116.SE.ADT.LITR.ZS + 
+    PercentChange1116.UIS.GER.4 + PercentChange1116.SE.PRE.NENR,data = out_1)
+summary(final)
 ```
 
 
